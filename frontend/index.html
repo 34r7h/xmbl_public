@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="XMBL App Generator - Create powerful web applications with our visual builder. No coding required." />
+  <meta name="keywords" content="app generator, web builder, no-code, low-code, vue.js, firebase, drag and drop" />
+  <meta name="author" content="XMBL Team" />
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="XMBL App Generator" />
+  <meta property="og:description" content="Create powerful web applications with our visual builder. No coding required." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://xmbl.app" />
+  <meta property="og:image" content="/og-image.jpg" />
+  <meta property="og:site_name" content="XMBL App Generator" />
+
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@xmbl_app" />
+  <meta name="twitter:title" content="XMBL App Generator" />
+  <meta name="twitter:description" content="Create powerful web applications with our visual builder. No coding required." />
+  <meta name="twitter:image" content="/twitter-image.jpg" />
+
+  <!-- Theme and Mobile -->
+  <meta name="theme-color" content="#3B82F6" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="XMBL" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- DNS Prefetch -->
+  <link rel="dns-prefetch" href="//firebaseapp.com" />
+  <link rel="dns-prefetch" href="//googleapis.com" />
+
+  <!-- Title -->
+  <title>XMBL App Generator</title>
+
+  <!-- Prevent FOUC (Flash of Unstyled Content) -->
+  <style>
+    /* Critical CSS for preventing layout shift */
+    html {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background-color: #f8fafc;
+      color: #1f2937;
+    }
+
+    .dark body {
+      background-color: #0f172a;
+      color: #f1f5f9;
+    }
+
+    /* Loading spinner styles */
+    .app-loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffffff;
+      z-index: 9999;
+    }
+
+    .dark .app-loading {
+      background-color: #0f172a;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #e5e7eb;
+      border-top: 4px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .dark .loading-spinner {
+      border-color: #374151;
+      border-top-color: #60a5fa;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .dark .loading-text {
+      color: #9ca3af;
+    }
+
+    /* Hide loading when app is ready */
+    .app-ready .app-loading {
+      display: none;
+    }
+
+    /* Prevent scrollbar shift */
+    html {
+      overflow-y: scroll;
+    }
+  </style>
+
+  <!-- Theme detection script (runs before Vue) -->
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('xmbl-theme') || 'system';
+        var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        }
+
+        // Update theme color meta tag
+        var metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (metaThemeColor) {
+          metaThemeColor.setAttribute('content', isDark ? '#0f172a' : '#3B82F6');
+        }
+      } catch (e) {
+        console.warn('Theme detection failed:', e);
+      }
+    })();
+  </script>
+
+  <!-- Error boundary for critical failures -->
+  <script>
+    window.addEventListener('error', function(event) {
+      console.error('Critical error:', event.error);
+      // You could send this to an error reporting service
+    });
+
+    window.addEventListener('unhandledrejection', function(event) {
+      console.error('Unhandled promise rejection:', event.reason);
+      // You could send this to an error reporting service
+    });
+  </script>
+</head>
+
+<body>
+  <!-- App root -->
+  <div id="app">
+    <!-- Loading screen (shown while Vue app initializes) -->
+    <div class="app-loading">
+      <div class="flex flex-col items-center">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading XMBL...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Noscript fallback -->
+  <noscript>
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #fff; z-index: 10000;">
+      <div style="text-align: center; padding: 2rem; max-width: 400px;">
+        <h1 style="color: #1f2937; margin-bottom: 1rem;">JavaScript Required</h1>
+        <p style="color: #6b7280; line-height: 1.6;">
+          XMBL App Generator requires JavaScript to function properly.
+          Please enable JavaScript in your browser settings and refresh the page.
+        </p>
+        <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 0.5rem; cursor: pointer;">
+          Refresh Page
+        </button>
+      </div>
+    </div>
+  </noscript>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator && location.protocol === 'https:') {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(registration) {
+            console.log('SW registered: ', registration);
+          })
+          .catch(function(registrationError) {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
+  </script>
+
+  <!-- Main Vue app script -->
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
