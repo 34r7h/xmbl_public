@@ -26,13 +26,23 @@ let analytics: Analytics
 export const initializeFirebase = () => {
   try {
     if (!app) {
-      app = initializeApp(firebaseConfig)
+      // Use default config for development if env vars are missing
+      const config = import.meta.env.PROD ? firebaseConfig : {
+        apiKey: "demo-key",
+        authDomain: "demo.firebaseapp.com",
+        projectId: "demo-project",
+        storageBucket: "demo.appspot.com",
+        messagingSenderId: "123456789",
+        appId: "1:123456789:web:demo"
+      }
+      
+      app = initializeApp(config)
       auth = getAuth(app)
       db = getFirestore(app)
       storage = getStorage(app)
 
       // Initialize analytics only in production
-      if (import.meta.env.PROD && firebaseConfig.measurementId) {
+      if (import.meta.env.PROD && config.measurementId) {
         analytics = getAnalytics(app)
       }
 
@@ -41,7 +51,10 @@ export const initializeFirebase = () => {
     return app
   } catch (error) {
     console.error('❌ Failed to initialize Firebase:', error)
-    throw error
+    // Don't throw in development to prevent app from crashing
+    if (import.meta.env.PROD) {
+      throw error
+    }
   }
 }
 
@@ -103,7 +116,7 @@ export const createConverter = <T>() => ({
   }
 })
 
-// Environment validation
+// Environment validation - Skip in development
 const requiredEnvVars = [
   'VITE_FIREBASE_API_KEY',
   'VITE_FIREBASE_AUTH_DOMAIN',
@@ -112,9 +125,11 @@ const requiredEnvVars = [
 
 const missingEnvVars = requiredEnvVars.filter(envVar => !import.meta.env[envVar])
 
-if (missingEnvVars.length > 0) {
+if (missingEnvVars.length > 0 && import.meta.env.PROD) {
   console.error('❌ Missing required Firebase environment variables:', missingEnvVars)
   throw new Error('Missing Firebase configuration. Please check your environment variables.')
+} else if (missingEnvVars.length > 0) {
+  console.warn('⚠️ Missing Firebase environment variables in development mode:', missingEnvVars)
 }
 
 export default {

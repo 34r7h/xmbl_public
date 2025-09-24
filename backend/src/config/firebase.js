@@ -10,6 +10,19 @@ const initializeFirebase = () => {
       return firebaseApp;
     }
 
+    // Check if we have Firebase environment variables
+    if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_CLIENT_EMAIL) {
+      logger.warn('⚠️ Firebase environment variables not set. Using default configuration for development.');
+      
+      // Initialize with default configuration for development
+      firebaseApp = admin.initializeApp({
+        projectId: 'xmbl-dev-project',
+      });
+      
+      logger.info('🔥 Firebase Admin SDK initialized with default configuration');
+      return firebaseApp;
+    }
+
     const serviceAccount = {
       type: 'service_account',
       project_id: process.env.FIREBASE_PROJECT_ID,

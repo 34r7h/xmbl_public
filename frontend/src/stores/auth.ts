@@ -49,6 +49,14 @@ export const useAuthStore = defineStore('auth', () => {
   // Actions
   const initialize = async () => {
     return new Promise<void>((resolve) => {
+      // Skip Firebase auth in development if not configured
+      if (import.meta.env.DEV && !import.meta.env.VITE_FIREBASE_API_KEY) {
+        console.warn('⚠️ Firebase not configured, skipping auth initialization')
+        isInitializing.value = false
+        resolve()
+        return
+      }
+
       const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
         try {
           if (firebaseUser) {
